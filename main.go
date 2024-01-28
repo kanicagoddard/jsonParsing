@@ -2,13 +2,16 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"log"
+	"net/http"
 	"net/url"
 	"os"
 )
 
 /*
 how to make a http get request
-there's already a go server setup
+there's already a go server setup - dir/test-server
 going to write the client side, output http body
 */
 
@@ -28,4 +31,18 @@ func main() {
 		os.Exit(1)
 	}
 
+	// get request
+	response, err := http.Get(os.Args[1])
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer response.Body.Close()
+
+	// read body response
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("HTTP Status Code: %d\n Body: %v\n ", response.StatusCode, body)
 }
